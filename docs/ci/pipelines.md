@@ -6,27 +6,30 @@ via `include: project: homelab/pipeline-templates` — do not copy job definitio
 
 ## Repos and CI scope
 
-| Repo                 | CI focus                                                 |
-| -------------------- | -------------------------------------------------------- |
-| `pipeline-templates` | Lint template repo itself                                |
-| `lab-home-k8s`       | Terraform + Ansible for all guests and k8s bootstrap     |
-| `lab-home-gitops`    | YAML lint, Helm lint, kubeconform for platform manifests |
-| App repos            | Container build → Trivy + GitLab scan → optional Harbor  |
+| Repo                 | CI focus                                                                    |
+| -------------------- | --------------------------------------------------------------------------- |
+| `pipeline-templates` | Lint template repo itself                                                   |
+| `lab-home-k8s`       | Terraform + Ansible + **Gitleaks** + Trivy FS                               |
+| `lab-home-gitops`    | YAML/Helm/kubeconform + **Gitleaks** + Trivy FS                             |
+| App repos            | Gitleaks → build → Trivy + Syft → Cosign → optional Harbor                  |
 
-## Container scanning (app repos)
+## Security / supply-chain templates
 
-Include templates from `pipeline-templates` — one job per file:
+| Stage    | Template                                    | Job                         |
+| -------- | ------------------------------------------- | --------------------------- |
+| validate | `templates/security/gitleaks.yml`           | `security:gitleaks`         |
+| validate | `templates/security/trivy-filesystem.yml`   | `security:trivy-fs-scan`    |
+| build    | `templates/container/build.yml`             | `container:build`           |
+| build    | `templates/container/harbor-build-push.yml` | `container:harbor-build-push` |
+| scan     | `templates/container/trivy-image-scan.yml`  | `container:trivy-image-scan` |
+| scan     | `templates/container/syft-sbom.yml`         | `container:syft-sbom`       |
+| scan     | `templates/container/container-scan.yml`    | `container:container-scan`  |
+| publish  | `templates/container/cosign-sign.yml`       | `container:cosign-sign`     |
+| publish  | `templates/container/harbor-push.yml`       | `container:harbor-push`     |
 
-| Stage   | Template                                    | Job                                    |
-| ------- | ------------------------------------------- | -------------------------------------- |
-| build   | `templates/container/build.yml`             | `container:build`                      |
-| build   | `templates/container/harbor-build-push.yml` | `container:harbor-build-push`          |
-| scan    | `templates/container/trivy-image-scan.yml`  | `container:trivy-image-scan`           |
-| scan    | `templates/container/container-scan.yml`    | `container:container-scan`             |
-| publish | `templates/container/harbor-push.yml`       | `container:harbor-push` (manual retag) |
-
-Infra/GitOps repos without images use `templates/security/trivy-filesystem.yml`
-(`security:trivy-fs-scan`) for IaC and secret checks.
+Cosign keys live in Infisical `pipelines`/`cosign` (or GitLab File vars) — see
+[secrets and Infisical](/architecture/secrets-and-infisical) and
+[supply chain](/architecture/supply-chain).
 
 Full reference: [pipeline-templates container scanning](https://github.com/nasraldin/pipeline-templates/blob/main/docs/container-scanning.md).
 
