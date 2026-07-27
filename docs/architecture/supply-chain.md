@@ -42,6 +42,8 @@ GitLab CI
 | Kyverno Helm                | `clusters/single/platform-apps.yaml` (wave 22)      | Install                    |
 | Baseline ClusterPolicies    | `platform/kyverno/policies.yaml`                    | **Audit**                  |
 | Harbor Trivy                | `platform/harbor/apps.yaml`                         | On                         |
+| CI: Gitleaks + Trivy FS     | `lab-home-k8s` / `lab-home-gitops` pipelines        | On                         |
+| CI: Syft + Cosign templates | `pipeline-templates` (include from app repos)       | Ready                      |
 | Cosign keys                 | Infisical seed map `pipelines`/`/cosign` (optional) | Slot                       |
 | verify-harbor-images policy | Same policies file                                  | Audit + placeholder pubkey |
 
