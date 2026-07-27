@@ -7,12 +7,14 @@ on:
       - "docs/**"
       - "package.json"
       - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
       - ".github/workflows/docs.yml"
   pull_request:
     paths:
       - "docs/**"
       - "package.json"
       - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
       - ".github/workflows/docs.yml"
   workflow_dispatch:
 
@@ -37,6 +39,8 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
+        with:
+          version: 11.17.0
 
       - name: Setup Node
         uses: actions/setup-node@v7
@@ -53,7 +57,9 @@ jobs:
             ${{ runner.os }}-vitepress-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm rebuild esbuild
 
       - name: Build site
         run: pnpm run docs:build
