@@ -1,5 +1,7 @@
 # dev-homelab
 
+[![Docs](https://github.com/nasraldin/dev-homelab/actions/workflows/docs.yml/badge.svg)](https://github.com/nasraldin/dev-homelab/actions/workflows/docs.yml)
+
 Standalone documentation for the **Dev Homelab** — a separate physical Proxmox
 machine with its own Kubernetes cluster, GitOps repo, and guest layout. This is
 not the practice-lab curriculum documented in [homelab](https://github.com/nasraldin/homelab).
