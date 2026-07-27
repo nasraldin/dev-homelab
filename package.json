@@ -6,9 +6,6 @@
   "author": "Nasr Aldin <ns@nasraldin.com> (https://nasraldin.com)",
   "private": true,
   "packageManager": "pnpm@11.17.0",
-  "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
-  },
   "scripts": {
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
