@@ -11,6 +11,23 @@ via `include: project: homelab/pipeline-templates` — do not copy job definitio
 | `pipeline-templates` | Lint template repo itself                                |
 | `lab-home-k8s`       | Terraform + Ansible for all guests and k8s bootstrap     |
 | `lab-home-gitops`    | YAML lint, Helm lint, kubeconform for platform manifests |
+| App repos            | Container build → Trivy + GitLab scan → optional Harbor  |
+
+## Container scanning (app repos)
+
+Include templates from `pipeline-templates` — one job per file:
+
+| Stage   | Template | Job |
+| ------- | -------- | --- |
+| build   | `templates/container/build.yml` | `container:build` |
+| scan    | `templates/container/trivy-image-scan.yml` | `container:trivy-image-scan` |
+| scan    | `templates/container/gitlab-container-scanning.yml` | `container:gitlab-scan` |
+| publish | `templates/container/harbor-push.yml` | `container:harbor-push` (manual) |
+
+Infra/GitOps repos without images use `templates/security/trivy-filesystem.yml`
+(`security:trivy-fs-scan`) for IaC and secret checks.
+
+Full reference: [pipeline-templates container scanning](https://github.com/nasraldin/pipeline-templates/blob/main/docs/container-scanning.md).
 
 ## Design rules (locked)
 
