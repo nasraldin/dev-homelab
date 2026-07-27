@@ -20,9 +20,10 @@ Include templates from `pipeline-templates` — one job per file:
 | Stage   | Template | Job |
 | ------- | -------- | --- |
 | build   | `templates/container/build.yml` | `container:build` |
+| build   | `templates/container/harbor-build-push.yml` | `container:harbor-build-push` |
 | scan    | `templates/container/trivy-image-scan.yml` | `container:trivy-image-scan` |
-| scan    | `templates/container/gitlab-container-scanning.yml` | `container:gitlab-scan` |
-| publish | `templates/container/harbor-push.yml` | `container:harbor-push` (manual) |
+| scan    | `templates/container/container-scan.yml` | `container:container-scan` |
+| publish | `templates/container/harbor-push.yml` | `container:harbor-push` (manual retag) |
 
 Infra/GitOps repos without images use `templates/security/trivy-filesystem.yml`
 (`security:trivy-fs-scan`) for IaC and secret checks.
