@@ -43,7 +43,7 @@ Open WebUI (.109)─┘         │                      gemma4:12b
 
 | Spec      | Value                                                                      |
 | --------- | -------------------------------------------------------------------------- |
-| VMID / IP | `120` / `192.168.68.20/22`                                                 |
+| VMID / IP | `120` / `192.168.68.24/22`                                                 |
 | CPU       | 8 × `host`, **NUMA on** (required with hugepages)                          |
 | RAM       | 16 GiB, ballooning **off**, hugepages **`"2"`** (2 MiB)                    |
 | Disk      | 150 GiB on `data01`                                                        |
@@ -67,7 +67,7 @@ Source: `lab-home-k8s/terraform/terraform.tfvars` (`hugepages = "2"` on `ai-01`)
 1. Host IOMMU + VFIO bind — [gpu-passthrough](gpu-passthrough.md) (blacklist `amdgpu`, `vfio-pci ids=1002:150e`).
 2. `terraform apply` (creates PCI mapping + VM). **Hugepages** may require **root@pam** if the API token is denied.
 3. Guest: install Ollama, `OLLAMA_HOST=0.0.0.0:11434`, `ollama pull gemma4:12b`, allow LAN `:11434`.
-4. Verify: `curl http://192.168.68.20:11434/api/tags`
+4. Verify: `curl http://192.168.68.24:11434/api/tags`
 5. Sync GitOps apps (LiteLLM first, then UIs).
 
 ---
@@ -75,7 +75,7 @@ Source: `lab-home-k8s/terraform/terraform.tfvars` (`hugepages = "2"` on `ai-01`)
 ## LiteLLM gateway
 
 - Chart: `oci://ghcr.io/berriai/litellm-helm` (pin in `apps/litellm/apps.yaml`)
-- Proxies `gemma4:12b` → `ollama/gemma4:12b` @ `http://192.168.68.20:11434`
+- Proxies `gemma4:12b` → `ollama/gemma4:12b` @ `http://192.168.68.24:11434`
 - Clients use the LiteLLM **master key** as the OpenAI API key
 - Health: `curl http://192.168.68.108:4000/health/readiness`
 

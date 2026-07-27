@@ -28,18 +28,20 @@ Shared bootstrap:
 
 ## Guest layout
 
-| VMID    | Host              | IP             | Role                                   |
-| ------- | ----------------- | -------------- | -------------------------------------- |
-| —       | `pve01`           | `192.168.68.2` | Proxmox hypervisor                     |
-| 110     | `infra-01`        | `.10`          | AdGuard, Technitium, Infisical, AIStor |
-| 111     | `gitlab-01`       | `.11`          | GitLab CE                              |
-| 112     | `runner-01`       | `.12`          | Static GitLab Runner                   |
-| 113     | `k8s-cp-01`       | `.13`          | Single control plane                   |
-| 114–116 | `k8s-w-01..03`    | `.14–.16`      | Workers + Longhorn data disks          |
-| 117     | `docker-01`       | `.17`          | NPM, it-tools, mailpit                 |
-| 118     | `dockhand` (LXC)  | `.18`          | Dockhand + Hawser hub                  |
-| 119     | `portainer` (LXC) | `.19`          | Portainer CE                           |
-| 120     | `ai-01`           | `.20`          | Ollama + **gemma4:12b** (890M GPU PT)  |
+All guest IPs are **after** fixed `pve01` `192.168.68.13` (`.14+`). Factory-reset never changes the hypervisor IP.
+
+| VMID    | Host              | IP              | Role                                   |
+| ------- | ----------------- | --------------- | -------------------------------------- |
+| —       | `pve01`           | `192.168.68.13` | Proxmox hypervisor                     |
+| 110     | `infra-01`        | `.14`           | AdGuard, Technitium, Infisical, AIStor |
+| 111     | `gitlab-01`       | `.15`           | GitLab CE                              |
+| 112     | `runner-01`       | `.16`           | Static GitLab Runner                   |
+| 113     | `k8s-cp-01`       | `.17`           | Single control plane                   |
+| 114–116 | `k8s-w-01..03`    | `.18–.20`       | Workers + Longhorn data disks          |
+| 117     | `docker-01`       | `.21`           | NPM, it-tools, mailpit                 |
+| 118     | `dockhand` (LXC)  | `.22`           | Dockhand + Hawser hub                  |
+| 119     | `portainer` (LXC) | `.23`           | Portainer CE                           |
+| 120     | `ai-01`           | `.24`           | Ollama + **gemma4:12b** (890M GPU PT)  |
 
 **Cilium LoadBalancer pool:** `192.168.68.100–119`  
 (Reservations: `.100` Argo, `.101` Harbor, `.102` Grafana, `.103` Keycloak,
@@ -89,7 +91,7 @@ Details: [network and access](network-and-access.md).
 ## Kubernetes design
 
 - **Single CP** kubeadm — no HAProxy, no multi-control-plane join
-- API endpoint: `192.168.68.13:6443` (`https://kube.lab:6443` on LAN)
+- API endpoint: `192.168.68.17:6443` (`https://kube.lab:6443` on LAN)
 - Cilium for CNI, LoadBalancer IPAM, L2 announcements, Gateway API
 - Argo CD root app → `lab-home-gitops/clusters/single`
 - **Not included:** Istio, Kyverno (practice lab only)

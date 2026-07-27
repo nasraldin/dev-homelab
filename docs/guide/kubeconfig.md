@@ -8,23 +8,23 @@ HAProxy VIP.
 
 - LAN reachability to `192.168.68.0/22`
 - `kubectl` installed
-- SSH to `nasr@192.168.68.13` (k8s-cp-01) with your lab key
-- DNS: `kube.lab` or `k8s-cp-01.lab.nasraldin.com` → `192.168.68.13`
+- SSH to `nasr@192.168.68.17` (k8s-cp-01) with your lab key
+- DNS: `kube.lab` or `k8s-cp-01.lab.nasraldin.com` → `192.168.68.17`
 
 Check before fetching config:
 
 ```bash
 dig +short kube.lab
-# expect: 192.168.68.13
+# expect: 192.168.68.17
 
-nc -z 192.168.68.13 6443 && echo "API reachable"
+nc -z 192.168.68.17 6443 && echo "API reachable"
 ```
 
 If DNS is wrong, follow [daily guide §1.3](daily-use.md#13-verify-dns) or add a
 temporary `/etc/hosts` line:
 
 ```text
-192.168.68.13 kube.lab
+192.168.68.17 kube.lab
 ```
 
 ## Install (one command)
@@ -55,7 +55,7 @@ kubectl get --raw=/readyz
 Server URL in the config:
 
 ```text
-https://192.168.68.13:6443
+https://192.168.68.17:6443
 ```
 
 (or `https://kube.lab:6443` when LAN DNS is working)
@@ -74,7 +74,7 @@ Re-run `fetch-kubeconfig.sh` after cert rotation or cluster rebuild.
 | Symptom                                                | Likely cause             | Fix                                                                |
 | ------------------------------------------------------ | ------------------------ | ------------------------------------------------------------------ |
 | `lookup kube.lab: no such host`                        | Laptop not using lab DNS | Point Mac DNS at `192.168.68.10` — see [daily guide](daily-use.md) |
-| `dial tcp 192.168.68.13:6443: i/o timeout`             | Not on lab LAN           | Connect to home network; confirm `k8s-cp-01` is up                 |
+| `dial tcp 192.168.68.17:6443: i/o timeout`             | Not on lab LAN           | Connect to home network; confirm `k8s-cp-01` is up                 |
 | `x509: certificate is valid for ...` when using raw IP | SAN mismatch             | Use `kube.lab` or set `tls-server-name` on the cluster entry       |
 | Wrong cluster by default                               | Another context selected | `kubectl config use-context home-lab`                              |
 

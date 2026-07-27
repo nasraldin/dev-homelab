@@ -34,11 +34,11 @@ cloudflare-tunnel     public hostnames (optional, after GitLab is up)
 
 1. `pve01` reachable: `ssh pve01` → key login, UI on `:8006`.
 2. `qm list` / `pct list` = VMs **110–117** + LXC **118–119** (10 guests).
-3. `infra-01` serves DNS; router DHCP points clients at `192.168.68.10`.
+3. `infra-01` serves DNS; router DHCP points clients at `192.168.68.14`.
 4. GitLab CE on `gitlab-01`; static runner on `runner-01`.
-5. Single-CP Kubernetes: **4 Ready nodes** (1 CP + 3 workers); API at `192.168.68.13:6443`.
-6. Argo CD syncs platform stack from `lab-home-gitops`.
-7. Public URLs live at `*.nasraldin.com`; LAN shortcuts at `*.lab` (router DNS → `.10`).
+5. Single-CP Kubernetes: **4 Ready nodes** (1 CP + 3 workers); API at `192.168.68.17:6443`.
+6. Argo CD syncs platform stack from `lab-home-gitops` (prefer LAN GitLab URL during bring-up).
+7. Public URLs live at `*.nasraldin.com`; LAN shortcuts at `*.lab` (router DNS → `.14`).
 8. Acceptance checklist passes (see § Acceptance).
 
 ---
@@ -48,18 +48,19 @@ cloudflare-tunnel     public hostnames (optional, after GitLab is up)
 On this machine the **hypervisor** and **guests** use different addresses.
 Do not reuse the practice-lab map where `pve01` was also `.13`.
 
-| Role            | Host       | IP                |
-| --------------- | ---------- | ----------------- |
-| Proxmox `pve01` | hypervisor | `192.168.68.2/22` |
-| `infra-01`      | VM 110     | `.10`             |
-| `gitlab-01`     | VM 111     | `.11`             |
-| `runner-01`     | VM 112     | `.12`             |
-| `k8s-cp-01`     | VM 113     | `.13`             |
-| `k8s-w-01..03`  | VM 114–116 | `.14–.16`         |
-| `docker-01`     | VM 117     | `.17`             |
-| `dockhand`      | LXC 118    | `.18`             |
-| `portainer`     | LXC 119    | `.19`             |
-| Cilium LB pool  | —          | `.100–.119`       |
+| Role            | Host       | IP                 |
+| --------------- | ---------- | ------------------ |
+| Proxmox `pve01` | hypervisor | `192.168.68.13/22` |
+| `infra-01`      | VM 110     | `.14`              |
+| `gitlab-01`     | VM 111     | `.15`              |
+| `runner-01`     | VM 112     | `.16`              |
+| `k8s-cp-01`     | VM 113     | `.17`              |
+| `k8s-w-01..03`  | VM 114–116 | `.18–.20`          |
+| `docker-01`     | VM 117     | `.21`              |
+| `dockhand`      | LXC 118    | `.22`              |
+| `portainer`     | LXC 119    | `.23`              |
+| `ai-01`         | VM (GPU)   | `.24`              |
+| Cilium LB pool  | —          | `.100–.119`        |
 
 If you pick a different hypervisor IP, update **all** of:
 
@@ -90,7 +91,7 @@ from a live environment before reinstalling. See
 | ashift / compression | `12` / `lz4`                                     |
 | Swap                 | ~8 GB                                            |
 | Hostname / FQDN      | `pve01` / `pve01.lab.nasraldin.com`              |
-| IP                   | **`192.168.68.2/22`**, gateway `192.168.68.1`    |
+| IP                   | **`192.168.68.13/22`**, gateway `192.168.68.1`   |
 | DNS (bootstrap)      | `1.1.1.1` (AdGuard `.10` comes after `infra-01`) |
 | Timezone             | `Asia/Dubai`                                     |
 | Root password        | Long random → password manager                   |
@@ -100,13 +101,13 @@ On the console after first boot:
 ```bash
 pveversion
 hostname -f                # pve01.lab.nasraldin.com
-ip -4 addr show vmbr0      # 192.168.68.2/22
+ip -4 addr show vmbr0      # 192.168.68.13/22
 zpool status               # rpool ONLINE — one member
 zpool list                 # ~1.8–2T on single-disk rpool
 ```
 
 - [ ] Single-disk `rpool` verified
-- [ ] Web UI: `https://192.168.68.2:8006`
+- [ ] Web UI: `https://192.168.68.13:8006`
 
 **Do not create VMs in the UI.** Terraform owns guests.
 
@@ -123,7 +124,7 @@ cp -n config.env.example config.env
 Edit `config.env` for the **new machine**:
 
 ```bash
-PVE_IP=192.168.68.2          # hypervisor — NOT k8s-cp-01 (.13)
+PVE_IP=192.168.68.13         # hypervisor — never change on factory-reset; guests must not use .13
 PVE_FQDN=pve01.lab.nasraldin.com
 PVE_GATEWAY=192.168.68.1
 ADMIN_USER=nasr
@@ -235,7 +236,7 @@ ssh pve01 'qm list; pct list'
 | 110     | `infra-01`        | `.10`     |
 | 111     | `gitlab-01`       | `.11`     |
 | 112     | `runner-01`       | `.12`     |
-| 113     | `k8s-cp-01`       | `.13`     |
+| 113     | `k8s-cp-01`       | `.21`     |
 | 114–116 | `k8s-w-01..03`    | `.14–.16` |
 | 117     | `docker-01`       | `.17`     |
 | 118     | `dockhand` (LXC)  | `.18`     |
@@ -297,7 +298,7 @@ make ansible-k8s
 1. Open AdGuard UI: `http://192.168.68.10:3000`
 2. On the router: set DHCP **primary DNS** → `192.168.68.10`, keep `1.1.1.1` as secondary
 3. Renew DHCP on Mac: `sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder`
-4. Confirm: `dig @192.168.68.10 pve01.lab.nasraldin.com +short` → `192.168.68.2`
+4. Confirm: `dig @192.168.68.10 pve01.lab.nasraldin.com +short` → `192.168.68.13`
 5. Confirm short LAN zone: `dig @192.168.68.10 gitlab.lab +short` → `192.168.68.11`
    See [LAN DNS](../access/lan-dns.md) for the full `*.lab` cheat sheet.
 
@@ -337,9 +338,9 @@ From `lab-home-k8s` root (requires working DNS or `/etc/hosts` for chart pulls):
 cd ~/homelab/lab-home-k8s
 
 # Install kubeconfig on laptop (single CP — no HAProxy)
-CP_HOST=nasr@192.168.68.13 \
-API_DNS=192.168.68.13 \
-API_VIP=192.168.68.13 \
+CP_HOST=nasr@192.168.68.17 \
+API_DNS=192.168.68.17 \
+API_VIP=192.168.68.17 \
 CONTEXT_NAME=home-lab \
 CLUSTER_NAME=home-lab \
 ./scripts/fetch-kubeconfig.sh
@@ -466,7 +467,7 @@ checked-in ingress template:
 ```bash
 # Reference: lab-home-k8s/config/cloudflare-tunnel-ingress.example.json
 cd ~/homelab/cloudflare-tunnel
-cp config.env.example config.env   # PVE_IP=192.168.68.2 on new machine
+cp config.env.example config.env   # PVE_IP=192.168.68.13 (same host after reset)
 export CLOUDFLARE_API_TOKEN='...'
 ./mac/bootstrap.sh --check
 ./mac/bootstrap.sh --yes

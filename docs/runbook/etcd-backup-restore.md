@@ -1,6 +1,6 @@
 # etcd backup and restore
 
-Single control-plane home lab (`k8s-cp-01` at `192.168.68.13`).
+Single control-plane home lab (`k8s-cp-01` at `192.168.68.17`).
 
 ## Automatic backups
 
@@ -11,7 +11,7 @@ Ansible installs `/usr/local/sbin/k8s-etcd-backup.sh` and
 Manual run on `k8s-cp-01`:
 
 ```bash
-ssh nasr@192.168.68.13
+ssh nasr@192.168.68.17
 sudo /usr/local/sbin/k8s-etcd-backup.sh
 ```
 
@@ -20,7 +20,7 @@ Optional later: sync `.db` files to AIStor on `infra-01`.
 ## Verify backup exists
 
 ```bash
-ssh nasr@192.168.68.13 'sudo ls -lt /var/backups/etcd | head'
+ssh nasr@192.168.68.17 'sudo ls -lt /var/backups/etcd | head'
 ```
 
 ## Restore drill (practice)

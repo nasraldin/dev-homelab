@@ -12,7 +12,7 @@ A **single control-plane** Kubernetes homelab for daily use:
 
 - **1 control plane** with stacked etcd (`k8s-cp-01`)
 - **3 workers** with Longhorn data disks (`k8s-w-01..03`)
-- **No HAProxy** — API endpoint is the control-plane IP directly (`192.168.68.13:6443`)
+- **No HAProxy** — API endpoint is the control-plane IP directly (`192.168.68.17:6443`)
 - **Cilium** for CNI, LoadBalancer IPAM, L2 Announcements, and Gateway API
 - **Argo CD** + sibling repo `lab-home-gitops` for day-2 platform apps
 - In-cluster **Prometheus / Grafana / Loki / Tempo / OpenTelemetry Collector**, **Keycloak**, **SonarQube**, **Harbor**, **Verdaccio**
@@ -31,7 +31,7 @@ A **single control-plane** Kubernetes homelab for daily use:
 
 ```text
 kubectl / kubelet / kubeadm
-  → 192.168.68.13:6443
+  → 192.168.68.17:6443
   → k8s-cp-01 apiserver
 ```
 
@@ -42,7 +42,7 @@ kubectl / kubelet / kubeadm
 | infra-01        | 110     | .10       | AdGuard, Technitium, Infisical, AIStor (Docker) |
 | gitlab-01       | 111     | .11       | GitLab CE Omnibus                               |
 | runner-01       | 112     | .12       | Static GitLab Runner                            |
-| k8s-cp-01       | 113     | .13       | Single control plane                            |
+| k8s-cp-01       | 113     | .21       | Single control plane                            |
 | k8s-w-01..03    | 114–116 | .14–.16   | Workers + Longhorn data disk                    |
 | docker-01       | 117     | .17       | NPM, it-tools, mailpit                          |
 | dockhand (LXC)  | 118     | .18       | Dockhand UI + Hawser hub                        |

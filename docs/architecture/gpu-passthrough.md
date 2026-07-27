@@ -97,7 +97,7 @@ curl http://127.0.0.1:11434/api/tags
 From a worker / laptop on LAN:
 
 ```bash
-curl http://192.168.68.20:11434/api/tags
+curl http://192.168.68.24:11434/api/tags
 ```
 
 Then sync LiteLLM + UIs ([ai-stack](ai-stack.md)).

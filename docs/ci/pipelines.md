@@ -6,26 +6,26 @@ via `include: project: homelab/pipeline-templates` — do not copy job definitio
 
 ## Repos and CI scope
 
-| Repo                 | CI focus                                                                    |
-| -------------------- | --------------------------------------------------------------------------- |
-| `pipeline-templates` | Lint template repo itself                                                   |
-| `lab-home-k8s`       | Terraform + Ansible + **Gitleaks** + Trivy FS                               |
-| `lab-home-gitops`    | YAML/Helm/kubeconform + **Gitleaks** + Trivy FS                             |
-| App repos            | Gitleaks → build → Trivy + Syft → Cosign → optional Harbor                  |
+| Repo                 | CI focus                                                   |
+| -------------------- | ---------------------------------------------------------- |
+| `pipeline-templates` | Lint template repo itself                                  |
+| `lab-home-k8s`       | Terraform + Ansible + **Gitleaks** + Trivy FS              |
+| `lab-home-gitops`    | YAML/Helm/kubeconform + **Gitleaks** + Trivy FS            |
+| App repos            | Gitleaks → build → Trivy + Syft → Cosign → optional Harbor |
 
 ## Security / supply-chain templates
 
-| Stage    | Template                                    | Job                         |
-| -------- | ------------------------------------------- | --------------------------- |
-| validate | `templates/security/gitleaks.yml`           | `security:gitleaks`         |
-| validate | `templates/security/trivy-filesystem.yml`   | `security:trivy-fs-scan`    |
-| build    | `templates/container/build.yml`             | `container:build`           |
+| Stage    | Template                                    | Job                           |
+| -------- | ------------------------------------------- | ----------------------------- |
+| validate | `templates/security/gitleaks.yml`           | `security:gitleaks`           |
+| validate | `templates/security/trivy-filesystem.yml`   | `security:trivy-fs-scan`      |
+| build    | `templates/container/build.yml`             | `container:build`             |
 | build    | `templates/container/harbor-build-push.yml` | `container:harbor-build-push` |
-| scan     | `templates/container/trivy-image-scan.yml`  | `container:trivy-image-scan` |
-| scan     | `templates/container/syft-sbom.yml`         | `container:syft-sbom`       |
-| scan     | `templates/container/container-scan.yml`    | `container:container-scan`  |
-| publish  | `templates/container/cosign-sign.yml`       | `container:cosign-sign`     |
-| publish  | `templates/container/harbor-push.yml`       | `container:harbor-push`     |
+| scan     | `templates/container/trivy-image-scan.yml`  | `container:trivy-image-scan`  |
+| scan     | `templates/container/syft-sbom.yml`         | `container:syft-sbom`         |
+| scan     | `templates/container/container-scan.yml`    | `container:container-scan`    |
+| publish  | `templates/container/cosign-sign.yml`       | `container:cosign-sign`       |
+| publish  | `templates/container/harbor-push.yml`       | `container:harbor-push`       |
 
 Cosign keys live in Infisical `pipelines`/`cosign` (or GitLab File vars) — see
 [secrets and Infisical](/architecture/secrets-and-infisical) and

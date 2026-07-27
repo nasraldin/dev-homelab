@@ -17,7 +17,7 @@ Use after a live bring-up on the **home lab machine** (or mark N/A for dry-run).
 ## Kubernetes (single CP)
 
 - [ ] `kubectl get nodes` shows **4 Ready** nodes (1 CP + 3 workers)
-- [ ] API via `192.168.68.13:6443` (`kubectl get --raw=/readyz` ok)
+- [ ] API via `192.168.68.17:6443` (`kubectl get --raw=/readyz` ok)
 - [ ] Cilium pods healthy; LB pool + L2 policy present; Gateway API CRDs installed
 - [ ] Argo CD apps Healthy/Synced for platform stack
 - [ ] Grafana / Prometheus / Loki / Tempo / **otel-collector** Healthy in `observability`

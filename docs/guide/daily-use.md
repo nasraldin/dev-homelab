@@ -11,7 +11,7 @@ For network design and DNS theory, read
 
 ## What you have when the lab is healthy
 
-- **Proxmox** on `192.168.68.2` with eleven guests (nine VMs + two LXC), including
+- **Proxmox** on `192.168.68.13` with eleven guests (nine VMs + two LXC), including
   **`ai-01`** for local LLM inference.
 - **DNS** on `infra-01` — AdGuard for clients, Technitium for internal zones.
 - **GitLab** with CI runners (static VM + in-cluster KEDA runner after GitOps sync).
@@ -95,7 +95,7 @@ kubectl get nodes
 # expect: 4 nodes Ready
 ```
 
-Context name is `home-lab`. API endpoint: `https://192.168.68.13:6443` (or
+Context name is `home-lab`. API endpoint: `https://192.168.68.17:6443` (or
 `https://kube.lab:6443` once DNS is working).
 
 ---
@@ -122,7 +122,7 @@ straight to the guest.
 
 |            |                                                               |
 | ---------- | ------------------------------------------------------------- |
-| **LAN**    | `https://pve.lab:8006` or `https://192.168.68.2:8006`         |
+| **LAN**    | `https://pve.lab:8006` or `https://192.168.68.13:8006`        |
 | **Public** | `https://homelab.nasraldin.com` (Cloudflare Access OTP first) |
 | **SSH**    | `ssh pve01` (if configured in `~/.ssh/config`)                |
 
@@ -293,7 +293,7 @@ Inference runs on **`ai-01`** (Ollama + `gemma4:12b` + 890M GPU). All UIs call
 | n8n         | `http://192.168.68.107`      |
 | Open WebUI  | `http://192.168.68.109`      |
 
-**Before first use:** host VFIO bound, `ai-01` up, `curl http://192.168.68.20:11434/api/tags`
+**Before first use:** host VFIO bound, `ai-01` up, `curl http://192.168.68.24:11434/api/tags`
 shows `gemma4:12b`, LiteLLM Healthy in Argo.
 
 #### Harbor
@@ -504,7 +504,7 @@ the redirect or bookmark the public URL for Git work.
 ### Kubernetes node NotReady
 
 ```bash
-ssh nasr@192.168.68.13
+ssh nasr@192.168.68.17
 sudo systemctl status kubelet
 ```
 

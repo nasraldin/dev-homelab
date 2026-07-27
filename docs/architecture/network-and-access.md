@@ -12,6 +12,19 @@ VMID map. Do not mix the two.
 
 ## Physical layout
 
+## IP allocation rule (critical)
+
+| Address       | Role                                                     |
+| ------------- | -------------------------------------------------------- |
+| `.1`          | Router / gateway                                         |
+| `.2`–`.12`    | **Reserved** — not for lab guests (before hypervisor)    |
+| `.13`         | **`pve01` only** — fixed; factory-reset never changes it |
+| `.14`+        | Lab VMs and CTs (home lab or practice lab after reset)   |
+| `.100`–`.119` | Cilium LoadBalancer pool                                 |
+
+Old lab and new lab share the same `pve01`. Reset wipes guests and re-provisions;
+the hypervisor IP stays `.13`. **No guest may use an address ≤ `.13`.**
+
 One Proxmox host (`pve01`) on the home LAN. All guests attach to `vmbr0` on
 `192.168.68.0/22`. The router is `192.168.68.1`.
 
@@ -22,16 +35,17 @@ Internet
    │
 Router 192.168.68.1
    │
-   ├── pve01          192.168.68.2   (hypervisor — not a guest VM)
+   ├── pve01          192.168.68.13  (hypervisor — fixed; never reset)
    │
-   ├── infra-01       .10            DNS, secrets, object storage
-   ├── gitlab-01      .11            GitLab CE
-   ├── runner-01      .12            static GitLab Runner
-   ├── k8s-cp-01      .13            Kubernetes control plane
-   ├── k8s-w-01..03   .14–.16        workers (+ Longhorn data disks)
-   ├── docker-01      .17            NPM, it-tools, mailpit
-   ├── dockhand (LXC) .18            container UI + Hawser hub
-   └── portainer (LXC).19            Portainer CE
+   ├── infra-01       .14            DNS, secrets, object storage
+   ├── gitlab-01      .15            GitLab CE
+   ├── runner-01      .16            static GitLab Runner
+   ├── k8s-cp-01      .17            Kubernetes control plane
+   ├── k8s-w-01..03   .18–.20        workers (+ Longhorn data disks)
+   ├── docker-01      .21            NPM, it-tools, mailpit
+   ├── dockhand (LXC) .22            container UI + Hawser hub
+   ├── portainer (LXC).23            Portainer CE
+   └── ai-01          .24            Ollama + GPU passthrough
 
 Kubernetes LoadBalancer pool (Cilium): 192.168.68.100–.119
 ```
@@ -42,21 +56,21 @@ Ten guests total: eight VMs (110–117) and two LXC containers (118–119).
 
 ## IP and VMID table
 
-| VMID | Host        | IP             | Role                                   |
-| ---- | ----------- | -------------- | -------------------------------------- |
-| —    | `pve01`     | `192.168.68.2` | Proxmox hypervisor                     |
-| 110  | `infra-01`  | `.10`          | AdGuard, Technitium, Infisical, AIStor |
-| 111  | `gitlab-01` | `.11`          | GitLab CE + container registry         |
-| 112  | `runner-01` | `.12`          | Static GitLab Runner                   |
-| 113  | `k8s-cp-01` | `.13`          | kubeadm control plane                  |
-| 114  | `k8s-w-01`  | `.14`          | Worker (apps)                          |
-| 115  | `k8s-w-02`  | `.15`          | Worker (platform)                      |
-| 116  | `k8s-w-03`  | `.16`          | Worker (storage / Longhorn)            |
-| 117  | `docker-01` | `.17`          | NPM, it-tools, mailpit                 |
-| 118  | `dockhand`  | `.18`          | Dockhand + Hawser (LXC)                |
-| 119  | `portainer` | `.19`          | Portainer CE (LXC)                     |
+| VMID | Host        | IP              | Role                                   |
+| ---- | ----------- | --------------- | -------------------------------------- |
+| —    | `pve01`     | `192.168.68.13` | Proxmox hypervisor                     |
+| 110  | `infra-01`  | `.14`           | AdGuard, Technitium, Infisical, AIStor |
+| 111  | `gitlab-01` | `.15`           | GitLab CE + container registry         |
+| 112  | `runner-01` | `.16`           | Static GitLab Runner                   |
+| 113  | `k8s-cp-01` | `.17`           | kubeadm control plane                  |
+| 114  | `k8s-w-01`  | `.18`           | Worker (apps)                          |
+| 115  | `k8s-w-02`  | `.19`           | Worker (platform)                      |
+| 116  | `k8s-w-03`  | `.20`           | Worker (storage / Longhorn)            |
+| 117  | `docker-01` | `.21`           | NPM, it-tools, mailpit                 |
+| 118  | `dockhand`  | `.22`           | Dockhand + Hawser (LXC)                |
+| 119  | `portainer` | `.23`           | Portainer CE (LXC)                     |
 
-Kubernetes API: `192.168.68.13:6443` (direct to the control plane — no HAProxy).
+Kubernetes API: `192.168.68.17:6443` (direct to the control plane — no HAProxy).
 
 ---
 
