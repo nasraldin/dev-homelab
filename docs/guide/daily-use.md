@@ -11,7 +11,8 @@ For network design and DNS theory, read
 
 ## What you have when the lab is healthy
 
-- **Proxmox** on `192.168.68.2` with ten guests (eight VMs + two LXC).
+- **Proxmox** on `192.168.68.2` with eleven guests (nine VMs + two LXC), including
+  **`ai-01`** for local LLM inference.
 - **DNS** on `infra-01` — AdGuard for clients, Technitium for internal zones.
 - **GitLab** with CI runners (static VM + in-cluster KEDA runner after GitOps sync).
 - **Kubernetes** — one control plane, three workers, Cilium CNI.
@@ -279,6 +280,22 @@ argocd app list
 
 To deploy a change: push to `lab-home-gitops`, watch Argo sync, or sync manually from the UI.
 
+#### Local AI (LiteLLM + chat UIs)
+
+Inference runs on **`ai-01`** (Ollama + `gemma4:12b` + 890M GPU). All UIs call
+**LiteLLM** — not Ollama directly. Full detail: [ai-stack](../architecture/ai-stack.md).
+
+| App         | LAN                          |
+| ----------- | ---------------------------- |
+| LiteLLM     | `http://192.168.68.108:4000` |
+| LibreChat   | `http://192.168.68.105:3080` |
+| AnythingLLM | `http://192.168.68.106:3001` |
+| n8n         | `http://192.168.68.107`      |
+| Open WebUI  | `http://192.168.68.109`      |
+
+**Before first use:** host VFIO bound, `ai-01` up, `curl http://192.168.68.20:11434/api/tags`
+shows `gemma4:12b`, LiteLLM Healthy in Argo.
+
 #### Harbor
 
 |            |                                |
@@ -299,7 +316,16 @@ docker login harbor.nasraldin.com
 | **LAN**    | `http://grafana.lab`            |
 | **Public** | `https://grafana.nasraldin.com` |
 
-Bundled with Prometheus, Loki, and Tempo in the `observability` namespace.
+Bundled with Prometheus, Loki, Tempo, and the **OpenTelemetry Collector** in
+`observability`. Send OTLP to the Collector (not Tempo):
+
+|            |                                                              |
+| ---------- | ------------------------------------------------------------ |
+| In-cluster | `http://otel-collector.observability.svc.cluster.local:4318` |
+| LAN        | `http://192.168.68.110:4318`                                 |
+
+Grafana Explore → **Tempo** for traces, **Loki** for logs, **Prometheus** for metrics.
+Details: [opentelemetry](../architecture/opentelemetry.md).
 
 #### Keycloak
 

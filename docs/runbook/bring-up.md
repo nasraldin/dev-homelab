@@ -398,7 +398,38 @@ Register CI/CD variables on each consumer project (GitLab → Settings → CI/CD
 
 ---
 
-### 9. GitOps — sync platform stack
+### 9. Infisical — seed secrets (before platform apps need them)
+
+Infisical runs on `infra-01:8090`. Complete first-admin signup in the UI once,
+then create a **machine identity** (`k8s-lab-home`) with Universal Auth and
+grant it read on projects `kubernetes` and `apps`.
+
+```bash
+cd ~/homelab/lab-home-k8s/ansible
+
+# Creates projects infra / pipelines / kubernetes / apps + upserts from secrets.yml
+export INFISICAL_UNIVERSAL_AUTH_CLIENT_ID=...
+export INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET=...
+ansible-playbook playbooks/infisical-seed.yml -e @secrets.yml
+```
+
+Apply the operator credentials (never commit these):
+
+```bash
+kubectl -n infisical-operator-system create secret generic infisical-universal-auth \
+  --from-literal=clientId="$INFISICAL_UNIVERSAL_AUTH_CLIENT_ID" \
+  --from-literal=clientSecret="$INFISICAL_UNIVERSAL_AUTH_CLIENT_SECRET"
+```
+
+Details: [Secrets and Infisical](../architecture/secrets-and-infisical.md).
+
+- [ ] Infisical UI reachable; org + admin exist
+- [ ] Seed playbook upserted required keys
+- [ ] Machine-identity Secret present in `infisical-operator-system`
+
+---
+
+### 10. GitOps — sync platform stack
 
 After Argo CD is installed and the root app points at `lab-home-gitops`:
 
@@ -407,21 +438,27 @@ kubectl -n argocd get applications
 kubectl -n argocd get applications -o wide
 ```
 
-Argo syncs in waves (cert-manager → metrics-server → ESO → KEDA → Longhorn →
-data operators → Keycloak / SonarQube → Harbor / Verdaccio → observability →
-gitlab-runner).
+Argo syncs in waves (cert-manager → metrics-server → ESO → Infisical operator →
+Kyverno + policies → KEDA → Longhorn → data → Keycloak / Sonar / Harbor →
+observability → gitlab-runner).
 
-Create Kubernetes secrets for in-cluster DBs before Keycloak/SonarQube sync
-(e.g. `keycloak-db`, `sonarqube-db` in their namespaces) once CNPG Postgres
-is running.
+In-cluster secrets (`keycloak-db`, `keycloak-admin`, `sonarqube-db`,
+`grafana-admin`, …) come from **InfisicalSecret** CRs — do not hand-create
+them once seed + machine identity are done.
+
+Harbor admin password: after seed, set once from Infisical
+(`kubernetes` / `harbor` / `HARBOR_ADMIN_PASSWORD`) via
+`argocd app set harbor -p harborAdminPassword=...` (not stored in Git).
 
 - [ ] Platform Applications → `Healthy` / `Synced` (Loki may lag on PVC bind)
+- [ ] InfisicalSecret objects report Ready; target Secrets exist
+- [ ] Kyverno ClusterPolicies present (`validationFailureAction: Audit`)
 - [ ] `kubectl -n observability get pods`
 - [ ] Longhorn UI or `kubectl -n longhorn-system get pods`
 
 ---
 
-### 10. Cloudflare Tunnel — public URLs
+### 11. Cloudflare Tunnel — public URLs
 
 After GitLab and core services are LAN-stable, wire the tunnel using the
 checked-in ingress template:

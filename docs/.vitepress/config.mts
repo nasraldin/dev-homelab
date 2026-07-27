@@ -62,6 +62,12 @@ export default defineConfig({
             { text: 'Topology', link: '/architecture/topology' },
             { text: 'Network and access', link: '/architecture/network-and-access' },
             { text: 'Kubernetes design', link: '/architecture/kubernetes' },
+            { text: 'AI stack', link: '/architecture/ai-stack' },
+            { text: 'OpenTelemetry', link: '/architecture/opentelemetry' },
+            { text: 'GPU passthrough', link: '/architecture/gpu-passthrough' },
+            { text: 'Secrets and Infisical', link: '/architecture/secrets-and-infisical' },
+            { text: 'Supply chain', link: '/architecture/supply-chain' },
+            { text: 'Wazuh placement', link: '/architecture/wazuh' },
           ],
         },
         {

@@ -37,25 +37,35 @@ coexist without conflict.
 
 ## `*.lab` cheat sheet
 
-| URL                          | Service            |
-| ---------------------------- | ------------------ |
-| `https://pve.lab:8006`       | Proxmox            |
-| `http://adguard.lab:3000`    | AdGuard            |
-| `http://dns.lab:5380`        | Technitium         |
-| `http://infisical.lab:8090`  | Infisical          |
-| `http://gitlab.lab`          | GitLab             |
-| `http://registry.lab:5050`   | Container registry |
-| `http://minio.lab:9001`      | AIStor console     |
-| `http://s3.lab:9000`         | S3 API             |
-| `http://npm.lab:81`          | NPM                |
-| `http://dockhand.lab`        | Dockhand           |
-| `https://portainer.lab:9443` | Portainer          |
-| `http://argo.lab`            | Argo CD            |
-| `http://harbor.lab`          | Harbor             |
-| `http://grafana.lab`         | Grafana            |
-| `http://id.lab`              | Keycloak           |
-| `http://longhorn.lab`        | Longhorn UI        |
-| `https://kube.lab:6443`      | Kubernetes API     |
+| URL                          | Service             |
+| ---------------------------- | ------------------- |
+| `https://pve.lab:8006`       | Proxmox             |
+| `http://adguard.lab:3000`    | AdGuard             |
+| `http://dns.lab:5380`        | Technitium          |
+| `http://infisical.lab:8090`  | Infisical           |
+| `http://gitlab.lab`          | GitLab              |
+| `http://registry.lab:5050`   | Container registry  |
+| `http://minio.lab:9001`      | AIStor console      |
+| `http://s3.lab:9000`         | S3 API              |
+| `http://npm.lab:81`          | NPM                 |
+| `http://dockhand.lab`        | Dockhand            |
+| `https://portainer.lab:9443` | Portainer           |
+| `http://argo.lab`            | Argo CD             |
+| `http://harbor.lab`          | Harbor              |
+| `http://grafana.lab`         | Grafana             |
+| `http://id.lab`              | Keycloak            |
+| `http://longhorn.lab`        | Longhorn UI         |
+| `http://192.168.68.105:3080` | LibreChat (AI)      |
+| `http://192.168.68.106:3001` | AnythingLLM         |
+| `http://192.168.68.107`      | n8n                 |
+| `http://192.168.68.108:4000` | LiteLLM gateway     |
+| `http://192.168.68.109`      | Open WebUI          |
+| `http://192.168.68.110:4318` | OTel Collector OTLP |
+| `https://kube.lab:6443`      | Kubernetes API      |
+
+AI stack (Ollama on `ai-01`, clients via LiteLLM):
+[ai-stack](../architecture/ai-stack.md).  
+OpenTelemetry: [opentelemetry](../architecture/opentelemetry.md).
 
 SSH uses `*.lab.nasraldin.com` (e.g. `gitlab-01.lab.nasraldin.com`).
 

@@ -27,18 +27,29 @@ has its own repos, guest map, DNS zones, and documentation.
 
 ## Suggested reading order
 
-| Step | Page                                                   | What you get                         |
-| ---- | ------------------------------------------------------ | ------------------------------------ |
-| 1    | [Daily use guide](/guide/daily-use)                    | Laptop DNS, URLs, everyday workflows |
-| 2    | [Laptop kubeconfig](/guide/kubeconfig)                 | `kubectl` from your Mac              |
-| 3    | [Topology](/architecture/topology)                     | Guest VMIDs, IPs, deploy order       |
-| 4    | [Network and access](/architecture/network-and-access) | DNS layers, TLS, traffic paths       |
-| 5    | [Bring-up runbook](/runbook/bring-up)                  | Fresh Proxmox → running cluster      |
-| 6    | [Acceptance checklist](/runbook/acceptance)            | Pass/fail gates after install        |
+| Step | Page                                                         | What you get                         |
+| ---- | ------------------------------------------------------------ | ------------------------------------ |
+| 1    | [Daily use guide](/guide/daily-use)                          | Laptop DNS, URLs, everyday workflows |
+| 2    | [Laptop kubeconfig](/guide/kubeconfig)                       | `kubectl` from your Mac              |
+| 3    | [Topology](/architecture/topology)                           | Guest VMIDs, IPs, deploy order       |
+| 4    | [Network and access](/architecture/network-and-access)       | DNS layers, TLS, traffic paths       |
+| 5    | [Bring-up runbook](/runbook/bring-up)                        | Fresh Proxmox → running cluster      |
+| 6    | [AI stack](/architecture/ai-stack)                           | Ollama, LiteLLM, chat UIs            |
+| 7    | [OpenTelemetry](/architecture/opentelemetry)                 | OTLP Collector + Grafana traces      |
+| 8    | [Secrets and Infisical](/architecture/secrets-and-infisical) | Seed projects + K8s sync             |
+| 9    | [Supply chain](/architecture/supply-chain)                   | Cosign, Trivy, Harbor, Kyverno       |
+| 10   | [Wazuh placement](/architecture/wazuh)                       | SIEM vs Prometheus / Falco / Kyverno |
+| 11   | [Acceptance checklist](/runbook/acceptance)                  | Pass/fail gates after install        |
 
 ## Quick links
 
 - [Public URLs](/access/public-urls) — `*.nasraldin.com`
 - [LAN DNS (`*.lab`)](/access/lan-dns) — shortcuts at home
+- [AI stack](/architecture/ai-stack) — local LLM + LiteLLM gateway
+- [OpenTelemetry](/architecture/opentelemetry) — OTLP Collector → Tempo/Prom/Loki
+- [Secrets and Infisical](/architecture/secrets-and-infisical) — seed + operator sync
+- [Supply chain](/architecture/supply-chain) — Cosign / Trivy / Kyverno
+- [Wazuh placement](/architecture/wazuh) — SIEM vs Prometheus / Falco / Kyverno
+- [GPU passthrough](/architecture/gpu-passthrough) — 890M → `ai-01`
 - [Maintenance](/operations/maintenance) — upgrades, selective Ansible, DR pointers
 - [etcd backup and restore](/runbook/etcd-backup-restore) — snapshot and restore drill

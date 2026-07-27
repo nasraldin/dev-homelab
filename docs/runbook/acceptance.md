@@ -4,7 +4,7 @@ Use after a live bring-up on the **home lab machine** (or mark N/A for dry-run).
 
 ## Infrastructure (Ansible / Terraform)
 
-- [ ] All **10 guests** reachable: `infra-01`, `gitlab-01`, `runner-01`, `k8s-cp-01`, `k8s-w-01..03`, `docker-01`, `dockhand`, `portainer`
+- [ ] All **11 guests** reachable: `infra-01`, `gitlab-01`, `runner-01`, `k8s-cp-01`, `k8s-w-01..03`, `docker-01`, `dockhand`, `portainer`, `ai-01`
 - [ ] `infra-01`: AdGuard, Technitium, Infisical, AIStor healthy (`minio` + `s3` URLs after tunnel)
 - [ ] `docker-01`: NPM, it-tools, mailpit containers healthy
 - [ ] `dockhand` LXC UI reachable; Hawser agents on `infra-01` + `docker-01`
@@ -20,10 +20,15 @@ Use after a live bring-up on the **home lab machine** (or mark N/A for dry-run).
 - [ ] API via `192.168.68.13:6443` (`kubectl get --raw=/readyz` ok)
 - [ ] Cilium pods healthy; LB pool + L2 policy present; Gateway API CRDs installed
 - [ ] Argo CD apps Healthy/Synced for platform stack
-- [ ] Grafana / Prometheus / Tempo running in `observability`
-- [ ] Keycloak and SonarQube pods running (Keycloak at `https://id.nasraldin.com` after DB secrets + sync)
+- [ ] Grafana / Prometheus / Loki / Tempo / **otel-collector** Healthy in `observability`
+- [ ] OTLP: `kubectl -n observability get svc otel-collector` has LB `.110`; Grafana Explore → Tempo works
+- [ ] Keycloak and SonarQube pods running (secrets from Infisical; Keycloak at `https://id.nasraldin.com`)
+- [ ] Infisical seeded (`infra` / `pipelines` / `kubernetes` / `apps`); machine-identity Secret present
+- [ ] InfisicalSecret → K8s Secrets Ready (`keycloak-db`, `grafana-admin`, …)
+- [ ] Kyverno installed; ClusterPolicies in **Audit** mode
+- [ ] Harbor Trivy enabled; admin password set from Infisical (not in Git)
 - [ ] etcd snapshot exists under `/var/backups/etcd` on `k8s-cp-01` — see [etcd backup and restore](etcd-backup-restore.md)
-- [ ] Laptop kubeconfig in `~/.kube/config` (context `home-lab`)
+- [ ] Laptop kubeconfig in `~/.kube/config` (context `home-lab`) — not required in Infisical for GitOps
 
 ## CI smoke tests
 

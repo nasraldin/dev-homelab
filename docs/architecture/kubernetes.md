@@ -15,7 +15,7 @@ A **single control-plane** Kubernetes homelab for daily use:
 - **No HAProxy** — API endpoint is the control-plane IP directly (`192.168.68.13:6443`)
 - **Cilium** for CNI, LoadBalancer IPAM, L2 Announcements, and Gateway API
 - **Argo CD** + sibling repo `lab-home-gitops` for day-2 platform apps
-- In-cluster **Prometheus / Grafana / Loki / Tempo**, **Keycloak**, **SonarQube**, **Harbor**, **Verdaccio**
+- In-cluster **Prometheus / Grafana / Loki / Tempo / OpenTelemetry Collector**, **Keycloak**, **SonarQube**, **Harbor**, **Verdaccio**
 
 ## Ownership
 
@@ -35,7 +35,7 @@ kubectl / kubelet / kubeadm
   → k8s-cp-01 apiserver
 ```
 
-## Guest inventory (10 guests)
+## Guest inventory
 
 | Guest           | VMID    | IP        | Role                                            |
 | --------------- | ------- | --------- | ----------------------------------------------- |
@@ -47,7 +47,8 @@ kubectl / kubelet / kubeadm
 | docker-01       | 117     | .17       | NPM, it-tools, mailpit                          |
 | dockhand (LXC)  | 118     | .18       | Dockhand UI + Hawser hub                        |
 | portainer (LXC) | 119     | .19       | Portainer CE                                    |
-| Cilium LB pool  | —       | .100–.119 | `.100`–`.104` reserved (see hub network doc)    |
+| ai-01           | 120     | .20       | Ollama + gemma4:12b (890M GPU)                  |
+| Cilium LB pool  | —       | .100–.119 | `.100`–`.110` reserved (see topology)           |
 
 ## Naming
 
@@ -59,12 +60,12 @@ kubectl / kubelet / kubeadm
 
 ## North-south traffic
 
-| Traffic                         | Owner                                                                                  |
-| ------------------------------- | -------------------------------------------------------------------------------------- |
-| Public `*.nasraldin.com`        | Cloudflare Tunnel → LAN origins                                                        |
-| LAN `*.lab`                     | Technitium → direct to guest / Cilium LB                                               |
-| LAN into cluster                | Cilium LB `.100` Argo, `.101` Harbor, `.102` Grafana, `.103` Keycloak, `.104` Longhorn |
-| Compose on infra-01 / docker-01 | Direct IP or `*.lab`                                                                   |
+| Traffic                         | Owner                                                                   |
+| ------------------------------- | ----------------------------------------------------------------------- |
+| Public `*.nasraldin.com`        | Cloudflare Tunnel → LAN origins                                         |
+| LAN `*.lab`                     | Technitium → direct to guest / Cilium LB                                |
+| LAN into cluster                | Cilium LB `.100`–`.110` (Argo…OTel Collector) — [topology](topology.md) |
+| Compose on infra-01 / docker-01 | Direct IP or `*.lab`                                                    |
 
 ## Not in this design
 
