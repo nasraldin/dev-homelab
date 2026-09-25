@@ -50,7 +50,7 @@ Do not reuse the practice-lab map where `pve01` was also `.13`.
 
 | Role            | Host       | IP                 |
 | --------------- | ---------- | ------------------ |
-| Proxmox `pve01` | hypervisor | `192.168.68.13/22` |
+| Proxmox `pve01` | hypervisor | `192.168.68.10/22` |
 | `infra-01`      | VM 110     | `.14`              |
 | `gitlab-01`     | VM 111     | `.15`              |
 | `runner-01`     | VM 112     | `.16`              |
@@ -91,7 +91,7 @@ from a live environment before reinstalling. See
 | ashift / compression | `12` / `lz4`                                     |
 | Swap                 | ~8 GB                                            |
 | Hostname / FQDN      | `pve01` / `pve01.lab.nasraldin.com`              |
-| IP                   | **`192.168.68.13/22`**, gateway `192.168.68.1`   |
+| IP                   | **`192.168.68.10/22`**, gateway `192.168.68.1`   |
 | DNS (bootstrap)      | `1.1.1.1` (AdGuard `.10` comes after `infra-01`) |
 | Timezone             | `Asia/Dubai`                                     |
 | Root password        | Long random → password manager                   |
@@ -101,13 +101,13 @@ On the console after first boot:
 ```bash
 pveversion
 hostname -f                # pve01.lab.nasraldin.com
-ip -4 addr show vmbr0      # 192.168.68.13/22
+ip -4 addr show vmbr0      # 192.168.68.10/22
 zpool status               # rpool ONLINE — one member
 zpool list                 # ~1.8–2T on single-disk rpool
 ```
 
 - [ ] Single-disk `rpool` verified
-- [ ] Web UI: `https://192.168.68.13:8006`
+- [ ] Web UI: `https://192.168.68.10:8006`
 
 **Do not create VMs in the UI.** Terraform owns guests.
 
@@ -124,7 +124,7 @@ cp -n config.env.example config.env
 Edit `config.env` for the **new machine**:
 
 ```bash
-PVE_IP=192.168.68.13         # hypervisor — never change on factory-reset; guests must not use .13
+PVE_IP=192.168.68.10         # hypervisor — never change on factory-reset; guests must not use .10
 PVE_FQDN=pve01.lab.nasraldin.com
 PVE_GATEWAY=192.168.68.1
 ADMIN_USER=nasr
@@ -298,7 +298,7 @@ make ansible-k8s
 1. Open AdGuard UI: `http://192.168.68.10:3000`
 2. On the router: set DHCP **primary DNS** → `192.168.68.10`, keep `1.1.1.1` as secondary
 3. Renew DHCP on Mac: `sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder`
-4. Confirm: `dig @192.168.68.10 pve01.lab.nasraldin.com +short` → `192.168.68.13`
+4. Confirm: `dig @192.168.68.10 pve01.lab.nasraldin.com +short` → `192.168.68.10`
 5. Confirm short LAN zone: `dig @192.168.68.10 gitlab.lab +short` → `192.168.68.11`
    See [LAN DNS](../access/lan-dns.md) for the full `*.lab` cheat sheet.
 
@@ -467,7 +467,7 @@ checked-in ingress template:
 ```bash
 # Reference: lab-home-k8s/config/cloudflare-tunnel-ingress.example.json
 cd ~/homelab/cloudflare-tunnel
-cp config.env.example config.env   # PVE_IP=192.168.68.13 (same host after reset)
+cp config.env.example config.env   # PVE_IP=192.168.68.10 (same host after reset)
 export CLOUDFLARE_API_TOKEN='...'
 ./mac/bootstrap.sh --check
 ./mac/bootstrap.sh --yes

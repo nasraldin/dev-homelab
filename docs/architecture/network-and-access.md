@@ -35,7 +35,7 @@ Internet
    │
 Router 192.168.68.1
    │
-   ├── pve01          192.168.68.13  (hypervisor — fixed; never reset)
+   ├── pve01          192.168.68.10  (hypervisor — fixed; never reset)
    │
    ├── infra-01       .14            DNS, secrets, object storage
    ├── gitlab-01      .15            GitLab CE
@@ -58,7 +58,7 @@ Ten guests total: eight VMs (110–117) and two LXC containers (118–119).
 
 | VMID | Host        | IP              | Role                                   |
 | ---- | ----------- | --------------- | -------------------------------------- |
-| —    | `pve01`     | `192.168.68.13` | Proxmox hypervisor                     |
+| —    | `pve01`     | `192.168.68.10` | Proxmox hypervisor                     |
 | 110  | `infra-01`  | `.14`           | AdGuard, Technitium, Infisical, AIStor |
 | 111  | `gitlab-01` | `.15`           | GitLab CE + container registry         |
 | 112  | `runner-01` | `.16`           | Static GitLab Runner                   |

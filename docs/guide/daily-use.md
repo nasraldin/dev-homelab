@@ -11,7 +11,7 @@ For network design and DNS theory, read
 
 ## What you have when the lab is healthy
 
-- **Proxmox** on `192.168.68.13` with eleven guests (nine VMs + two LXC), including
+- **Proxmox** on `192.168.68.10` with eleven guests (nine VMs + two LXC), including
   **`ai-01`** for local LLM inference.
 - **DNS** on `infra-01` — AdGuard for clients, Technitium for internal zones.
 - **GitLab** with CI runners (static VM + in-cluster KEDA runner after GitOps sync).
@@ -122,7 +122,7 @@ straight to the guest.
 
 |            |                                                               |
 | ---------- | ------------------------------------------------------------- |
-| **LAN**    | `https://pve.lab:8006` or `https://192.168.68.13:8006`        |
+| **LAN**    | `https://pve.lab:8006` or `https://192.168.68.10:8006`        |
 | **Public** | `https://homelab.nasraldin.com` (Cloudflare Access OTP first) |
 | **SSH**    | `ssh pve01` (if configured in `~/.ssh/config`)                |
 

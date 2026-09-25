@@ -28,11 +28,11 @@ Shared bootstrap:
 
 ## Guest layout
 
-All guest IPs are **after** fixed `pve01` `192.168.68.13` (`.14+`). Factory-reset never changes the hypervisor IP.
+All guest IPs are **after** fixed `pve01` `192.168.68.10` (`.14+`). Factory-reset never changes the hypervisor IP.
 
 | VMID    | Host              | IP              | Role                                   |
 | ------- | ----------------- | --------------- | -------------------------------------- |
-| —       | `pve01`           | `192.168.68.13` | Proxmox hypervisor                     |
+| —       | `pve01`           | `192.168.68.10` | Proxmox hypervisor                     |
 | 110     | `infra-01`        | `.14`           | AdGuard, Technitium, Infisical, AIStor |
 | 111     | `gitlab-01`       | `.15`           | GitLab CE                              |
 | 112     | `runner-01`       | `.16`           | Static GitLab Runner                   |
